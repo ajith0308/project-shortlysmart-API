@@ -10,6 +10,7 @@ from appwrite.services.databases import Databases
 from appwrite.query import *
 import datetime
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 
 app = FastAPI()
 url_db = {}
@@ -110,4 +111,4 @@ def redirect_to_long_url(short_hash: str):
     if data["total"] == 0:
         raise HTTPException(status_code=404, detail="URL not found")
     else:
-        return {"redirect_url": data["documents"][0]["url"]}
+        return RedirectResponse(url=data["documents"][0]["url"])
