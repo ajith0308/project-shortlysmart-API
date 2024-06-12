@@ -1,4 +1,6 @@
+import base64
 import datetime
+import io
 import json
 import re
 import uuid
@@ -11,6 +13,8 @@ from appwrite.query import *
 import datetime
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
+import qrcode
+from PIL import Image
 
 app = FastAPI()
 url_db = {}
@@ -107,8 +111,31 @@ def redirect_to_long_url(short_hash: str):
             Query.equal("hash", short_hash),
         ],
     )
-    print("ddatra", data)
     if data["total"] == 0:
         raise HTTPException(status_code=404, detail="URL not found")
     else:
         return RedirectResponse(url=data["documents"][0]["url"])
+
+
+@app.get("/qr/{short_hash}")
+def qr(short_hash: str):
+    databases = Databases(client)
+    data = databases.list_documents(
+        "6668855b0003410f5928",
+        "api0001",
+        [
+            Query.equal("hash", short_hash),
+        ],
+    )
+    if data["total"] == 0:
+        raise HTTPException(status_code=404, detail="URL not found")
+    else:
+        # return RedirectResponse(url=data["documents"][0]["url"])
+        url = data["documents"][0]["url"]
+        qr = qrcode.make(url)
+        buffer = io.BytesIO()
+        qr.save(buffer, format="PNG")
+        qr_code_bytes = buffer.getvalue()
+        base64_encoded_string = base64.b64encode(qr_code_bytes).decode("utf-8")
+        img = "data:image/png;base64," + base64_encoded_string
+        return {"qr": img}
