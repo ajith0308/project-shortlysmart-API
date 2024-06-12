@@ -36,7 +36,9 @@ def generate_short_url(url: str) -> str:
 
 
 @app.post("/shorten")
-async def shorten_url(url: str = Body(...)):
+async def shorten_url(
+    request: dict,
+):
     """
     Shortens a long URL and returns the shortened version.
 
@@ -46,7 +48,7 @@ async def shorten_url(url: str = Body(...)):
     Returns:
         dict: A JSON response containing the shortened URL.
     """
-
+    url = request.get("url")
     shortened_url = generate_short_url(url)
     return {"short_url": shortened_url}
 
