@@ -1,10 +1,25 @@
+import datetime
+import json
 import re
+import uuid
 from fastapi import FastAPI, Body, HTTPException, Request
 import hashlib
 from base64 import urlsafe_b64encode
+from appwrite.client import Client
+from appwrite.services.databases import Databases
+from appwrite.query import *
+import datetime
 
 app = FastAPI()
 url_db = {}
+client = Client()
+(
+    client.set_endpoint("https://cloud.appwrite.io/v1")  # Your API Endpoint
+    .set_project("666882990016fb1b074a")  # Your project ID
+    .set_key(
+        "ca05cedd116ccd51e2df5261093e63399f41aa8c6075b885fca8ddfad5e29c827dcc21d05a18370e5b1fc8d1f54292c593c618e3a1f112be294f188183f2e6fdd95dc55db5fe9a40b114f420c2fccb5f5c00f97b8bb96b743cec1bfef7fb324e76e16c7aef749ef3206cb483f612da27db53a197e0e6400aeb6afce0290fd2af"
+    )  # Your secret API key
+)
 # Characters to use for encoding the shortened URL
 allowed_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
@@ -38,6 +53,22 @@ def generate_short_url(url: str) -> str:
 
 @app.post("/shorten")
 async def shorten_url(request: dict, urlrequest: Request):
+    url = request.get("url")
+    baseurl = urlrequest.base_url
+    shortened_url = generate_short_url(url)
+    databases = Databases(client)
+    now = datetime.datetime.now()
+    data = {"url": url, "created_by": "12/06/2024", "hash": shortened_url}
+    json_string = json.dumps(data)
+    my_uuid = uuid.uuid4()
+    print("uuid", my_uuid)
+    result = databases.create_document(
+        "6668855b0003410f5928",
+        "api0001",
+        str(my_uuid),
+        data=json_string,
+    )
+
     """
     Shortens a long URL and returns the shortened version.
 
@@ -47,20 +78,27 @@ async def shorten_url(request: dict, urlrequest: Request):
     Returns:
         dict: A JSON response containing the shortened URL.
     """
-    url = request.get("url")
-    baseurl = urlrequest.base_url
-    shortened_url = generate_short_url(url)
+
     return {"short_url": f"{baseurl}{shortened_url}"}
 
 
 # (Optional) Implementation for redirecting from shortened URLs to original URLs
 # This would require additional logic to store the mapping between shortened and original URLs
 
+
 # ... (implementation for redirection logic)
 @app.get("/{short_hash}")
 def redirect_to_long_url(short_hash: str):
-    long_url = url_db.get(short_hash)
-    if not long_url:
+    databases = Databases(client)
+    data = databases.list_documents(
+        "6668855b0003410f5928",
+        "api0001",
+        [
+            Query.equal("hash", short_hash),
+        ],
+    )
+    print("ddatra", data)
+    if data["total"] == 0:
         raise HTTPException(status_code=404, detail="URL not found")
-    
-    return {"long_url": long_url}
+    else:
+        return {"redirect_url": data["documents"][0]["url"]}
