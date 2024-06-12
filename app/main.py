@@ -93,7 +93,7 @@ async def shorten_url(request: dict, urlrequest: Request):
         dict: A JSON response containing the shortened URL.
     """
 
-    return {"short_url": f"{baseurl}{shortened_url}"}
+    return {"short_url": f"{baseurl}{shortened_url}", "qrurl": qrurl(shortened_url)}
 
 
 # (Optional) Implementation for redirecting from shortened URLs to original URLs
@@ -139,3 +139,26 @@ def qr(short_hash: str):
         base64_encoded_string = base64.b64encode(qr_code_bytes).decode("utf-8")
         img = "data:image/png;base64," + base64_encoded_string
         return {"qr": img}
+
+
+def qrurl(short_hash: str):
+    databases = Databases(client)
+    data = databases.list_documents(
+        "6668855b0003410f5928",
+        "api0001",
+        [
+            Query.equal("hash", short_hash),
+        ],
+    )
+    if data["total"] == 0:
+        raise HTTPException(status_code=404, detail="URL not found")
+    else:
+        # return RedirectResponse(url=data["documents"][0]["url"])
+        url = data["documents"][0]["url"]
+        qr = qrcode.make(url)
+        buffer = io.BytesIO()
+        qr.save(buffer, format="PNG")
+        qr_code_bytes = buffer.getvalue()
+        base64_encoded_string = base64.b64encode(qr_code_bytes).decode("utf-8")
+        img = "data:image/png;base64," + base64_encoded_string
+        return {"image": img}
