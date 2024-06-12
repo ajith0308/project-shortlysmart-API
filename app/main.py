@@ -1,9 +1,10 @@
-from fastapi import FastAPI, Body
+import re
+from fastapi import FastAPI, Body, HTTPException, Request
 import hashlib
 from base64 import urlsafe_b64encode
 
 app = FastAPI()
-
+url_db = {}
 # Characters to use for encoding the shortened URL
 allowed_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
@@ -36,9 +37,7 @@ def generate_short_url(url: str) -> str:
 
 
 @app.post("/shorten")
-async def shorten_url(
-    request: dict,
-):
+async def shorten_url(request: dict, urlrequest: Request):
     """
     Shortens a long URL and returns the shortened version.
 
@@ -49,11 +48,19 @@ async def shorten_url(
         dict: A JSON response containing the shortened URL.
     """
     url = request.get("url")
+    baseurl = urlrequest.base_url
     shortened_url = generate_short_url(url)
-    return {"short_url": shortened_url}
+    return {"short_url": f"{baseurl}{shortened_url}"}
 
 
 # (Optional) Implementation for redirecting from shortened URLs to original URLs
 # This would require additional logic to store the mapping between shortened and original URLs
 
 # ... (implementation for redirection logic)
+@app.get("/{short_hash}")
+def redirect_to_long_url(short_hash: str):
+    long_url = url_db.get(short_hash)
+    if not long_url:
+        raise HTTPException(status_code=404, detail="URL not found")
+    
+    return {"long_url": long_url}
