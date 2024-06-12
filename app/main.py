@@ -9,9 +9,18 @@ from appwrite.client import Client
 from appwrite.services.databases import Databases
 from appwrite.query import *
 import datetime
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 url_db = {}
+origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 client = Client()
 (
     client.set_endpoint("https://cloud.appwrite.io/v1")  # Your API Endpoint
