@@ -130,7 +130,6 @@ def qr(short_hash: str):
     if data["total"] == 0:
         raise HTTPException(status_code=404, detail="URL not found")
     else:
-        # return RedirectResponse(url=data["documents"][0]["url"])
         url = data["documents"][0]["url"]
         qr = qrcode.make(url)
         buffer = io.BytesIO()
@@ -153,7 +152,6 @@ def qrurl(short_hash: str):
     if data["total"] == 0:
         raise HTTPException(status_code=404, detail="URL not found")
     else:
-        # return RedirectResponse(url=data["documents"][0]["url"])
         url = data["documents"][0]["url"]
         qr = qrcode.make(url)
         buffer = io.BytesIO()
