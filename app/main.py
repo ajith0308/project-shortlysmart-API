@@ -31,7 +31,7 @@ client = Client()
     client.set_endpoint("https://cloud.appwrite.io/v1")  # Your API Endpoint
     .set_project("666882990016fb1b074a")  # Your project ID
     .set_key(
-        "ca05cedd116ccd51e2df5261093e63399f41aa8c6075b885fca8ddfad5e29c827dcc21d05a18370e5b1fc8d1f54292c593c618e3a1f112be294f188183f2e6fdd95dc55db5fe9a40b114f420c2fccb5f5c00f97b8bb96b743cec1bfef7fb324e76e16c7aef749ef3206cb483f612da27db53a197e0e6400aeb6afce0290fd2af"
+        "da70a8f9ec1ba4540a5fbbd6adb98564e944168fa46fe76c943bf9a66eb76a05c48ad1a5c1297e4dc34489d2722a1e5d7fdf9d5842cc2695b7f367602f57dc47ef85d979c591b0d95b998f16f673c9997c1f6f22b0cf73f749d53338ea3e03dce1057161bb0cc59c24fd3784e1e453fb5d3ccb42561d13de364a087051c4c369"
     )  # Your secret API key
 )
 # Characters to use for encoding the shortened URL
