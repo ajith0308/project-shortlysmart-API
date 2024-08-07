@@ -167,10 +167,11 @@ def qrurl(baseurl, short_hash: str):
 
 @app.post("/add-task")
 def create_task(request: dict):
+    print(request)
     data = {
         "name": request["content"],
         "created_at": request["createdAt"],
-        "lable": request["lable"],
+        "lable": request["label"],
         "updated_at": request["updatedAt"],
         "user_id": request["userId"],
         "categories_id": request["category"],
