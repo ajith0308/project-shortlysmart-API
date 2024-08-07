@@ -196,13 +196,14 @@ def create_task(request: dict):
     coloction_id = request["document_id"]
     data = {
         "content": request["content"],
-        "created_at": request["created_at"],
-        "lable": request["lable"],
-        "updated_at": request["updated_at"],
-        "user_id": request["user_id"],
-        "categories_id": request["categories_id"],
+        "created_at": request["createdAt"],
+        "lable": request["label"],
+        "updated_at": request["updatedAt"],
+        "user_id": request["userId"],
+        "category": request["category"],
         "deadlines": request["deadlines"],
         "status": request["status"],
+        "isUrgent": request["isUrgent"],
     }
     json_string = json.dumps(data)
     my_uuid = uuid.uuid4()
