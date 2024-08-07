@@ -177,6 +177,7 @@ def create_task(request: dict):
         "category": request["category"],
         "deadlines": request["deadlines"],
         "status": request["status"],
+        "isUrgent": request["isUrgent"],
     }
     json_string = json.dumps(data)
     my_uuid = uuid.uuid4()
