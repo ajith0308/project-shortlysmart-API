@@ -174,7 +174,7 @@ def create_task(request: dict):
         "lable": request["label"],
         "updated_at": request["updatedAt"],
         "user_id": request["userId"],
-        "categories_id": request["category"],
+        "category": request["category"],
         "deadlines": request["deadlines"],
         "status": request["status"],
     }
