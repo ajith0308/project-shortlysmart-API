@@ -193,13 +193,13 @@ def create_task(request: dict):
 
 @app.post("/updated")
 def create_task(request: dict):
-    coloction_id = request["$id"]
+    id = request["$id"]
     data = {
         "content": request["content"],
-        "created_at": request["createdAt"],
-        "lable": request["label"],
-        "updated_at": request["updatedAt"],
-        "user_id": request["userId"],
+        "created_at": request["created_at"],
+        "lable": request["lable"],
+        "updated_at": request["updated_at"],
+        "user_id": request["user_id"],
         "category": request["category"],
         "deadlines": request["deadlines"],
         "status": request["status"],
@@ -211,7 +211,7 @@ def create_task(request: dict):
     databases.update_document(
         "66b2fbdd0020749b80ae",
         "66b2fbfb002d9632ebd4",
-        coloction_id,
+        id,
         data=json_string,
     )
     return {"data": "Updated Successfully"}
