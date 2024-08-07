@@ -169,7 +169,7 @@ def qrurl(baseurl, short_hash: str):
 def create_task(request: dict):
     print(request)
     data = {
-        "name": request["content"],
+        "content": request["content"],
         "created_at": request["createdAt"],
         "lable": request["label"],
         "updated_at": request["updatedAt"],
@@ -194,7 +194,7 @@ def create_task(request: dict):
 def create_task(request: dict):
     coloction_id = request["document_id"]
     data = {
-        "name": request["name"],
+        "content": request["content"],
         "created_at": request["created_at"],
         "lable": request["lable"],
         "updated_at": request["updated_at"],
