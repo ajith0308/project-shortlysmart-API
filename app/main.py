@@ -193,7 +193,7 @@ def create_task(request: dict):
 
 @app.post("/updated")
 def create_task(request: dict):
-    coloction_id = request["document_id"]
+    coloction_id = request["$id"]
     data = {
         "content": request["content"],
         "created_at": request["createdAt"],
