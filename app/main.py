@@ -29,9 +29,9 @@ app.add_middleware(
 client = Client()
 (
     client.set_endpoint("https://cloud.appwrite.io/v1")  # Your API Endpoint
-    .set_project("666882990016fb1b074a")  # Your project ID
+    .set_project("66681a22000266663d8b")  # Your project ID
     .set_key(
-        "da70a8f9ec1ba4540a5fbbd6adb98564e944168fa46fe76c943bf9a66eb76a05c48ad1a5c1297e4dc34489d2722a1e5d7fdf9d5842cc2695b7f367602f57dc47ef85d979c591b0d95b998f16f673c9997c1f6f22b0cf73f749d53338ea3e03dce1057161bb0cc59c24fd3784e1e453fb5d3ccb42561d13de364a087051c4c369"
+        "ef0cce0a8a08f0b5fdbfc5ccfdddbadf993f7834bace49bf9009bac80f0008e8329099711e8edf8d7de43e20ee33ca370b9d876f28640df835a67d8127db57d707abcbf81c5d692dcf5e62ce932337bf57725ec4939d9fa0098b55c7e84d27030d880af1dc60499fbebaa8c45f1c73d2819ea5aa3c0852af1ce6e0181f54afb1"
     )  # Your secret API key
 )
 # Characters to use for encoding the shortened URL
@@ -163,3 +163,61 @@ def qrurl(baseurl, short_hash: str):
         base64_encoded_string = base64.b64encode(qr_code_bytes).decode("utf-8")
         img = "data:image/png;base64," + base64_encoded_string
         return {"image": img}
+
+
+@app.post("/add-task")
+def create_task(request: dict):
+    data = {
+        "name": request["name"],
+        "created_at": request["created_at"],
+        "lable": request["lable"],
+        "updated_at": request["updated_at"],
+        "user_id": request["user_id"],
+        "categories_id": request["categories_id"],
+        "deadlines": request["deadlines"],
+        "status": request["status"],
+    }
+    json_string = json.dumps(data)
+    my_uuid = uuid.uuid4()
+    databases = Databases(client)
+    databases.create_document(
+        "66b2fbdd0020749b80ae",
+        "66b2fbfb002d9632ebd4",
+        str(my_uuid),
+        data=json_string,
+    )
+    return {"data": "Created Successfully"}
+
+
+@app.post("/updated")
+def create_task(request: dict):
+    coloction_id = request["document_id"]
+    data = {
+        "name": request["name"],
+        "created_at": request["created_at"],
+        "lable": request["lable"],
+        "updated_at": request["updated_at"],
+        "user_id": request["user_id"],
+        "categories_id": request["categories_id"],
+        "deadlines": request["deadlines"],
+        "status": request["status"],
+    }
+    json_string = json.dumps(data)
+    my_uuid = uuid.uuid4()
+    databases = Databases(client)
+    databases.update_document(
+        "66b2fbdd0020749b80ae",
+        "66b2fbfb002d9632ebd4",
+        coloction_id,
+        data=json_string,
+    )
+    return {"data": "Updated Successfully"}
+
+
+@app.post("/list")
+def create_task(request: dict):
+    user_id = request["id"]
+    my_uuid = uuid.uuid4()
+    databases = Databases(client)
+    data = databases.list_documents("66b2fbdd0020749b80ae", "66b2fbfb002d9632ebd4")
+    return {"data": data}
